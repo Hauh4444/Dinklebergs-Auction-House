@@ -22,8 +22,8 @@ class ListingService:
             setattr(listing, key, value)
             return listing
         
-        @staticmethod
-        def delete_listing(listing_id):
-            listing = Listing.query.get(listing_id)
-            if not listing:
-                return None
+    @staticmethod
+    def delete_listing(listing_id):
+        listing = Listing.query.get(listing_id)
+        if not listing:
+            return None
