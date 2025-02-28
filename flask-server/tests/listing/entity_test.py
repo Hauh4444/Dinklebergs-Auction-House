@@ -110,12 +110,12 @@ def test_listing_to_dict():
 
 
 def test_listing_missing_required_fields():
-    with pytest.raises(TypeError):
+    with pytest.raises(expected_exception=TypeError):
         Listing()
 
 
 def test_listing_invalid_types():
-    with pytest.raises(TypeError):
+    with pytest.raises(expected_exception=TypeError):
         Listing(
             user_id="not_a_number",  # Invalid type
             category_id=2,
@@ -129,7 +129,7 @@ def test_listing_invalid_types():
             image_encoded="image_data"
         )
 
-    with pytest.raises(ValueError):
+    with pytest.raises(expected_exception=ValueError):
         Listing(
             user_id=1,
             category_id=2,

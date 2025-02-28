@@ -51,10 +51,10 @@ def test_chat_to_dict():
 
 
 def test_chat_missing_required_fields():
-    with pytest.raises(TypeError):
+    with pytest.raises(expected_exception=TypeError):
         Chat()
 
 
 def test_chat_invalid_types():
-    with pytest.raises(TypeError):
+    with pytest.raises(expected_exception=TypeError):
         Chat(user1_id="1", user2_id="2")

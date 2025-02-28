@@ -25,17 +25,17 @@ class Category:
             category_id: int | None = None
     ):
         if not isinstance(name, str):
-            raise TypeError("name must be a string")
+            raise TypeError(f"name must be a string, got {type(name).__name__}")
         if not isinstance(description, str):
-            raise TypeError("description must be a string")
+            raise TypeError(f"description must be a string, got {type(description).__name__}")
         if image_encoded is not None and not isinstance(image_encoded, str):
-            raise TypeError("image_encoded must be a string or None")
+            raise TypeError(f"image_encoded must be a string or None, got {type(image_encoded).__name__}")
         if created_at is not None and not isinstance(created_at, datetime) and not isinstance(created_at, str):
-            raise TypeError("created_at must be a datetime or None")
-        if updated_at is not None and not isinstance(updated_at, datetime) and not isinstance(created_at, str):
-            raise TypeError("updated_at must be a datetime or None")
+            raise TypeError(f"created_at must be a datetime, string, or None, got {type(created_at).__name__}")
+        if updated_at is not None and not isinstance(updated_at, datetime) and not isinstance(updated_at, str):
+            raise TypeError(f"updated_at must be a datetime, string, or None, got {type(updated_at).__name__}")
         if category_id is not None and not isinstance(category_id, int):
-            raise TypeError("category_id must be an int or None")
+            raise TypeError(f"category_id must be an int or None, got {type(category_id).__name__}")
 
         self.category_id = category_id
         self.name = name

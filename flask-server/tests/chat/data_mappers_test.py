@@ -45,7 +45,7 @@ def test_get_chat_by_id(mock_db_session):
         "created_at": datetime(2023, 1, 1, 12, 0, 0),
     }
 
-    chat = ChatMapper.get_chat_by_id(1, db_session=mock_db_session)
+    chat = ChatMapper.get_chat_by_id(chat_id=1, db_session=mock_db_session)
 
     assert chat["chat_id"] == 1
     assert chat["user1_id"] == 1
@@ -61,7 +61,7 @@ def test_create_chat(mock_db_session):
         "created_at": datetime(2023, 3, 1, 12, 0, 0),
     }
 
-    chat_id = ChatMapper.create_chat(data, db_session=mock_db_session)
+    chat_id = ChatMapper.create_chat(data=data, db_session=mock_db_session)
 
     assert chat_id == 3
 
@@ -70,7 +70,7 @@ def test_delete_chat(mock_db_session):
     mock_cursor = mock_db_session.cursor.return_value
     mock_cursor.rowcount = 1
 
-    rows_deleted = ChatMapper.delete_chat(1, db_session=mock_db_session)
+    rows_deleted = ChatMapper.delete_chat(chat_id=1, db_session=mock_db_session)
 
     assert rows_deleted == 1
 
@@ -88,8 +88,8 @@ def test_create_chat_missing_fields(mock_db_session):
     # Missing user1_id (required field)
     del data["user1_id"]
 
-    with pytest.raises(TypeError):
-        ChatMapper.create_chat(data, db_session=mock_db_session)
+    with pytest.raises(expected_exception=TypeError):
+        ChatMapper.create_chat(data=data, db_session=mock_db_session)
 
 
 # Test for invalid data types when creating a chat
@@ -105,8 +105,8 @@ def test_create_chat_invalid_data_type(mock_db_session):
     # Invalid type for created_at, should be datetime
     data["created_at"] = 2023
 
-    with pytest.raises(TypeError):
-        ChatMapper.create_chat(data, db_session=mock_db_session)
+    with pytest.raises(expected_exception=TypeError):
+        ChatMapper.create_chat(data=data, db_session=mock_db_session)
 
 
 # Test for database failure when fetching chat by id
@@ -114,8 +114,8 @@ def test_get_chat_by_id_db_failure(mock_db_session):
     mock_cursor = mock_db_session.cursor.return_value
     mock_cursor.fetchone.side_effect = Exception("Database error")
 
-    with pytest.raises(Exception, match="Database error"):
-        ChatMapper.get_chat_by_id(1, db_session=mock_db_session)
+    with pytest.raises(expected_exception=Exception, match="Database error"):
+        ChatMapper.get_chat_by_id(chat_id=1, db_session=mock_db_session)
 
 
 # Test for no chats returned when fetching all chats
@@ -139,8 +139,8 @@ def test_create_chat_db_failure(mock_db_session):
         "created_at": datetime(2023, 3, 1, 12, 0, 0),
     }
 
-    with pytest.raises(Exception, match="Database error"):
-        ChatMapper.create_chat(data, db_session=mock_db_session)
+    with pytest.raises(expected_exception=Exception, match="Database error"):
+        ChatMapper.create_chat(data=data, db_session=mock_db_session)
 
 
 # Test for database failure when deleting a chat
@@ -148,5 +148,5 @@ def test_delete_chat_db_failure(mock_db_session):
     mock_cursor = mock_db_session.cursor.return_value
     mock_cursor.execute.side_effect = Exception("Database error")
 
-    with pytest.raises(Exception, match="Database error"):
-        ChatMapper.delete_chat(1, db_session=mock_db_session)
+    with pytest.raises(expected_exception=Exception, match="Database error"):
+        ChatMapper.delete_chat(chat_id=1, db_session=mock_db_session)

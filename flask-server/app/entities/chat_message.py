@@ -23,6 +23,17 @@ class ChatMessage:
             sent_at: datetime | None = None,
             message_id: int | None = None
     ):
+        if not isinstance(sender_id, int):
+            raise TypeError(f"sender_id must be a int, got {type(sender_id).__name__}")
+        if not isinstance(chat_id, int):
+            raise TypeError(f"chat_id must be a int, got {type(chat_id).__name__}")
+        if not isinstance(message, str):
+            raise TypeError(f"message must be a string, got {type(message).__name__}")
+        if sent_at is not None and not isinstance(sent_at, datetime) and not isinstance(sent_at, str):
+            raise TypeError(f"sent_at must be a datetime, string, or None, got {type(sent_at).__name__}")
+        if message_id is not None and not isinstance(message_id, int):
+            raise TypeError(f"message_id must be an int or None, got {type(message_id).__name__}")
+
         self.message_id = message_id
         self.sender_id = sender_id
         self.chat_id = chat_id
@@ -35,6 +46,6 @@ class ChatMessage:
             "message_id": self.message_id,
             "sender_id": self.sender_id,
             "chat_id": self.chat_id,
-            "content": self.message,
-            "created_at": self.sent_at
+            "message": self.message,
+            "sent_at": self.sent_at
         }

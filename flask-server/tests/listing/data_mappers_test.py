@@ -36,7 +36,7 @@ def test_get_all_listings(mock_db_session):
     ]
     args = {"min_price": 500}
 
-    listings = ListingMapper.get_all_listings(args, mock_db_session)
+    listings = ListingMapper.get_all_listings(args=args, db_session=mock_db_session)
 
     assert len(listings) == 2
     assert listings[0]["title"] == "Laptop"
@@ -54,7 +54,7 @@ def test_get_listing_by_id(mock_db_session):
             "created_at": datetime(2024, 1, 1), "updated_at": datetime(2024, 1, 2)
     }
 
-    listing = ListingMapper.get_listing_by_id(1, mock_db_session)
+    listing = ListingMapper.get_listing_by_id(listing_id=1, db_session=mock_db_session)
 
     assert listing["listing_id"] == 1
     assert listing["title"] == "Laptop"
@@ -73,7 +73,7 @@ def test_create_listing(mock_db_session):
             "created_at": datetime(2024, 1, 1), "updated_at": datetime(2024, 1, 2)
     }
 
-    listing_id = ListingMapper.create_listing(data, mock_db_session)
+    listing_id = ListingMapper.create_listing(data=data, db_session=mock_db_session)
 
     assert listing_id == 3
 
@@ -86,7 +86,7 @@ def test_update_listing(mock_db_session):
         "buy_now_price": 1300
     }
 
-    rows_updated = ListingMapper.update_listing(1, data, mock_db_session)
+    rows_updated = ListingMapper.update_listing(listing_id=1, data=data, db_session=mock_db_session)
 
     assert rows_updated == 1
 
@@ -95,7 +95,7 @@ def test_delete_listing(mock_db_session):
     mock_cursor = mock_db_session.cursor.return_value
     mock_cursor.rowcount = 1
 
-    rows_deleted = ListingMapper.delete_listing(1, mock_db_session)
+    rows_deleted = ListingMapper.delete_listing(listing_id=1, db_session=mock_db_session)
 
     assert rows_deleted == 1
 
@@ -115,8 +115,8 @@ def test_create_listing_missing_fields(mock_db_session):
 
     del data["title"]
 
-    with pytest.raises(TypeError):
-        ListingMapper.create_listing(data, mock_db_session)
+    with pytest.raises(expected_exception=TypeError):
+        ListingMapper.create_listing(data=data, db_session=mock_db_session)
 
 
 def test_create_listing_invalid_data_type(mock_db_session):
@@ -135,23 +135,23 @@ def test_create_listing_invalid_data_type(mock_db_session):
     # Invalid type for created_at, should be datetime
     data["created_at"] = 2023
 
-    with pytest.raises(TypeError):
-        ListingMapper.create_listing(data, mock_db_session)
+    with pytest.raises(expected_exception=TypeError):
+        ListingMapper.create_listing(data=data, db_session=mock_db_session)
 
 
 def test_get_listing_by_id_db_failure(mock_db_session):
     mock_cursor = mock_db_session.cursor.return_value
     mock_cursor.fetchone.side_effect = Exception("Database error")
 
-    with pytest.raises(Exception, match="Database error"):
-        ListingMapper.get_listing_by_id(1, mock_db_session)
+    with pytest.raises(expected_exception=Exception, match="Database error"):
+        ListingMapper.get_listing_by_id(listing_id=1, db_session=mock_db_session)
 
 
 def test_get_all_listings_no_results(mock_db_session):
     mock_cursor = mock_db_session.cursor.return_value
     mock_cursor.fetchall.return_value = []
 
-    listings = ListingMapper.get_all_listings({}, mock_db_session)
+    listings = ListingMapper.get_all_listings(args={}, db_session=mock_db_session)
 
     assert len(listings) == 0
 
@@ -170,8 +170,8 @@ def test_create_listing_db_failure(mock_db_session):
             "created_at": datetime(2024, 1, 1), "updated_at": datetime(2024, 1, 2)
     }
 
-    with pytest.raises(Exception, match="Database error"):
-        ListingMapper.create_listing(data, mock_db_session)
+    with pytest.raises(expected_exception=Exception, match="Database error"):
+        ListingMapper.create_listing(data=data, db_session=mock_db_session)
 
 
 def test_update_listing_invalid_id(mock_db_session):
@@ -183,7 +183,7 @@ def test_update_listing_invalid_id(mock_db_session):
         "buy_now_price": 1300
     }
 
-    rows_updated = ListingMapper.update_listing(999, data, mock_db_session)  # Invalid ID
+    rows_updated = ListingMapper.update_listing(listing_id=999, data=data, db_session=mock_db_session)  # Invalid ID
 
     assert rows_updated == 0  # Expecting no rows to be updated
 
@@ -192,6 +192,6 @@ def test_delete_listing_db_failure(mock_db_session):
     mock_cursor = mock_db_session.cursor.return_value
     mock_cursor.execute.side_effect = Exception("Database error")
 
-    with pytest.raises(Exception, match="Database error"):
-        ListingMapper.delete_listing(1, mock_db_session)
+    with pytest.raises(expected_exception=Exception, match="Database error"):
+        ListingMapper.delete_listing(listing_id=1, db_session=mock_db_session)
 

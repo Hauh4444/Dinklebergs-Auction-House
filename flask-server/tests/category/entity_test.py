@@ -55,10 +55,10 @@ def test_category_to_dict():
 
 
 def test_category_missing_required_fields():
-    with pytest.raises(TypeError):
+    with pytest.raises(expected_exception=TypeError):
         Category()
 
 
 def test_category_invalid_types():
-    with pytest.raises(TypeError):
+    with pytest.raises(expected_exception=TypeError):
         Category(name=123, description=True)
